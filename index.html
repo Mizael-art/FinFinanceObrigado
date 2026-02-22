@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acesso Liberado — FinFinance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#04050f;--surface:#0c0e1f;--surface2:#12152e;
+  --border:rgba(99,179,237,0.1);
+  --accent:#38bdf8;--accent2:#34d399;--accent3:#818cf8;
+  --text:#e2e8f0;--muted:#64748b;
+  --sh:0 0 0 1px rgba(99,179,237,0.07),0 24px 60px rgba(0,0,0,0.5);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(56,189,248,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,0.025) 1px,transparent 1px);background-size:60px 60px;z-index:0;pointer-events:none;}
+.glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+.g1{width:700px;height:700px;background:radial-gradient(circle,rgba(56,189,248,0.08) 0%,transparent 70%);top:-250px;left:50%;transform:translateX(-50%);}
+.g2{width:500px;height:500px;background:radial-gradient(circle,rgba(52,211,153,0.05) 0%,transparent 70%);bottom:-150px;right:-100px;}
+
+.page{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:56px 20px 80px;display:flex;flex-direction:column;align-items:center;gap:28px;}
+
+.logo{display:flex;align-items:center;gap:10px;opacity:0;animation:fD .6s ease .1s forwards;}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,#38bdf8,#818cf8);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.3px;}
+.logo-text span{color:var(--accent);}
+
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:100px;font-size:13px;font-weight:500;color:var(--accent2);opacity:0;animation:fD .6s ease .2s forwards;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);box-shadow:0 0 8px var(--accent2);animation:blink 2s infinite;}
+
+.card-hero{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:52px 44px;text-align:center;box-shadow:var(--sh);position:relative;overflow:hidden;opacity:0;animation:fU .7s ease .3s forwards;}
+.card-hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:60%;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,0.5),transparent);}
+.emoji{font-size:58px;display:block;margin-bottom:20px;animation:bounce .8s ease .5s both;}
+.card-hero h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,38px);font-weight:800;letter-spacing:-1px;line-height:1.15;color:#f8fafc;margin-bottom:14px;}
+.hl{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.card-hero p{font-size:16px;color:var(--muted);line-height:1.7;max-width:420px;margin:0 auto 36px;}
+
+.btn-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:17px 40px;background:linear-gradient(135deg,#38bdf8,#818cf8);color:#04050f;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;border:none;border-radius:14px;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 32px rgba(56,189,248,0.35);animation:glowP 3s ease infinite;position:relative;overflow:hidden;}
+.btn-cta::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);opacity:0;transition:opacity .2s;}
+.btn-cta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 16px 48px rgba(56,189,248,0.5);}
+.btn-cta:hover::after{opacity:1;}
+.arr{display:inline-block;transition:transform .2s;}
+.btn-cta:hover .arr{transform:translateX(4px);}
+
+.divider{width:100%;display:flex;align-items:center;gap:16px;opacity:0;animation:fU .6s ease .55s forwards;}
+.div-line{flex:1;height:1px;background:var(--border);}
+.div-txt{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;}
+
+.tut-card{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:24px;overflow:hidden;box-shadow:var(--sh);}
+.tut-ios{opacity:0;animation:fU .7s ease .65s forwards;}
+.tut-android{opacity:0;animation:fU .7s ease .75s forwards;}
+
+.tut-head{padding:26px 30px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.tut-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.ios-icon{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.15);}
+.and-icon{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.15);}
+.tut-head h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.3px;margin-bottom:3px;}
+.tut-head p{font-size:13px;color:var(--muted);}
+
+.tut-body{padding:24px 30px;display:flex;flex-direction:column;gap:10px;}
+
+.step{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:13px;transition:border-color .2s;}
+.step:hover{border-color:rgba(56,189,248,0.18);}
+.sn{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.sn-ios{background:rgba(56,189,248,0.12);color:var(--accent);}
+.sn-and{background:rgba(52,211,153,0.12);color:var(--accent2);}
+.si{font-size:20px;flex-shrink:0;margin-top:2px;width:26px;text-align:center;}
+.sc{flex:1;}
+.sc-t{font-size:14px;color:var(--text);font-weight:500;margin-bottom:3px;}
+.sc-d{font-size:13px;color:var(--muted);line-height:1.5;}
+.sc-d b{color:#94a3b8;font-weight:500;}
+
+.card-help{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;opacity:0;animation:fU .6s ease .85s forwards;}
+.help-l{display:flex;align-items:center;gap:14px;}
+.help-ico{width:42px;height:42px;background:linear-gradient(135deg,rgba(129,140,248,0.15),rgba(56,189,248,0.1));border:1px solid rgba(129,140,248,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.help-t{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.help-s{font-size:13px;color:var(--muted);margin-top:2px;}
+.btn-ig{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#f77737);color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;border:none;border-radius:10px;cursor:pointer;text-decoration:none;transition:transform .2s,opacity .2s;white-space:nowrap;}
+.btn-ig:hover{transform:translateY(-1px);opacity:.9;}
+
+.footer{font-size:12px;color:rgba(100,116,139,0.45);text-align:center;opacity:0;animation:fU .6s ease 1s forwards;}
+
+@keyframes fD{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fU{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes bounce{0%{opacity:0;transform:scale(.2);}55%{transform:scale(1.12);}75%{transform:scale(.95);}100%{opacity:1;transform:scale(1);}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes glowP{0%,100%{box-shadow:0 8px 32px rgba(56,189,248,.35);}50%{box-shadow:0 8px 48px rgba(56,189,248,.6);}}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:0;}}
+
+@media(max-width:580px){
+  .page{padding:36px 14px 60px;gap:20px;}
+  .card-hero{padding:36px 20px;}
+  .btn-cta{width:100%;}
+  .tut-body{padding:18px 16px;}
+  .tut-head{padding:20px 18px 16px;}
+  .card-help{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow g1"></div>
+<div class="glow g2"></div>
+
+<div class="page">
+
+  <!-- Logo -->
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+        <path d="M20 4L36 13V27L20 36L4 27V13L20 4Z" fill="rgba(255,255,255,0.9)"/>
+        <path d="M13 20h14M20 13v14" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="logo-text"><span>Fin</span>Finance</span>
+  </div>
+
+  <!-- Badge -->
+  <div class="badge"><span class="dot"></span> Pagamento confirmado</div>
+
+  <!-- Hero -->
+  <div class="card-hero">
+    <span class="emoji">🎉</span>
+    <h1>Bem-vindo ao<br><span class="hl">FinFinance!</span></h1>
+    <p>Seu acesso foi liberado com sucesso. Agora você tem controle total sobre suas finanças com inteligência real.</p>
+    <a href="https://app-fin-finance.vercel.app" class="btn-cta">
+      🔓 Acessar FinFinance <span class="arr">→</span>
+    </a>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider">
+    <div class="div-line"></div>
+    <span class="div-txt">Como instalar no celular</span>
+    <div class="div-line"></div>
+  </div>
+
+  <!-- iPhone -->
+  <div class="tut-card tut-ios">
+    <div class="tut-head">
+      <div class="tut-icon ios-icon">🍎</div>
+      <div>
+        <h2>iPhone — Safari</h2>
+        <p>Instale na tela inicial sem precisar da App Store</p>
+      </div>
+    </div>
+    <div class="tut-body">
+      <div class="step">
+        <div class="sn sn-ios">1</div>
+        <div class="si">🌐</div>
+        <div class="sc">
+          <div class="sc-t">Abra no Safari</div>
+          <div class="sc-d">Acesse o FinFinance pelo <b>Safari</b> — não funciona em outros navegadores</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="sn sn-ios">2</div>
+        <div class="si">⬆️</div>
+        <div class="sc">
+          <div class="sc-t">Toque em Compartilhar</div>
+          <div class="sc-d">Ícone de quadrado com seta na <b>barra inferior</b> do Safari</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="sn sn-ios">3</div>
+        <div class="si">📋</div>
+        <div class="sc">
+          <div class="sc-t">Adicionar à Tela de Início</div>
+          <div class="sc-d">Role a lista e toque em <b>"Adicionar à Tela de Início"</b></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="sn sn-ios">4</div>
+        <div class="si">✅</div>
+        <div class="sc">
+          <div class="sc-t">Confirmar</div>
+          <div class="sc-d">Toque em <b>"Adicionar"</b> no canto direito — pronto, está na tela inicial!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Android -->
+  <div class="tut-card tut-android">
+    <div class="tut-head">
+      <div class="tut-icon and-icon">🤖</div>
+      <div>
+        <h2>Android — Chrome</h2>
+        <p>Instale na tela inicial sem precisar da Play Store</p>
+      </div>
+    </div>
+    <div class="tut-body">
+      <div class="step">
+        <div class="sn sn-and">1</div>
+        <div class="si">🌐</div>
+        <div class="sc">
+          <div class="sc-t">Abra no Chrome</div>
+          <div class="sc-d">Acesse o FinFinance pelo <b>Google Chrome</b></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="sn sn-and">2</div>
+        <div class="si">⋮</div>
+        <div class="sc">
+          <div class="sc-t">Toque nos três pontos</div>
+          <div class="sc-d">Menu no <b>canto superior direito</b> do navegador</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="sn sn-and">3</div>
+        <div class="si">📲</div>
+        <div class="sc">
+          <div class="sc-t">Adicionar à tela inicial</div>
+          <div class="sc-d">Toque em <b>"Adicionar à tela inicial"</b> no menu</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="sn sn-and">4</div>
+        <div class="si">✅</div>
+        <div class="sc">
+          <div class="sc-t">Instalar</div>
+          <div class="sc-d">Confirme tocando em <b>"Instalar"</b> — pronto, está na tela inicial!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Suporte -->
+  <div class="card-help">
+    <div class="help-l">
+      <div class="help-ico">💬</div>
+      <div>
+        <div class="help-t">Precisa de ajuda?</div>
+        <div class="help-s">Fale com a gente pelo Instagram — respondemos rápido.</div>
+      </div>
+    </div>
+    <a href="https://instagram.com/finfinancebr" target="_blank" class="btn-ig">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="white">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+      @finfinancebr
+    </a>
+  </div>
+
+  <div class="footer">FinFinance · Seu dinheiro, inteligente. · © 2026</div>
+
+</div>
+
+<script>
+const cols = ['#38bdf8','#34d399','#818cf8','#f472b6','#fbbf24'];
+window.addEventListener('load', () => {
+  for(let i=0;i<50;i++){
+    setTimeout(() => {
+      const e = document.createElement('div');
+      const s = Math.random()*7+4, d = Math.random()*2.5+2;
+      e.style.cssText = `position:fixed;width:${s}px;height:${s}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'2px'};left:${Math.random()*100}vw;top:-12px;opacity:${Math.random()*.6+.4};pointer-events:none;z-index:9999;animation:fall ${d}s ease-in forwards;`;
+      document.body.appendChild(e);
+      setTimeout(() => e.remove(), (d+.5)*1000);
+    }, i*55);
+  }
+});
+</script>
+
+</body>
+</html>
